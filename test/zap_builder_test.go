@@ -3,6 +3,7 @@ package test
 import (
 	"github.com/1-bi/log-api"
 	logzap "github.com/1-bi/log-zap"
+	"log"
 	"testing"
 )
 
@@ -14,8 +15,10 @@ func Test_Zap_Factory_case1_base(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
-
+	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	if err != nil {
+		log.Println(err)
+	}
 	// --- create logger factory manager
 
 }
@@ -24,11 +27,14 @@ func Test_Zap_Factory_case1_base(t *testing.T) {
 func Test_Zap_Factory_prop_presets_example(t *testing.T) {
 
 	var lfo = logzap.NewLoggerOption()
-	lfo.SetProperty(logzap.P_PRESETS, logzap.PRESETS_EXAMPLE)
+	lfo.SetProperty(logzap.PRESETS, logzap.PRESETS_EXAMPLE)
 
 	// use new or struct binding
 	// create instance from implement
-	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	if err != nil {
+		log.Println(err)
+	}
 
 	logger := logapi.GetLogger("test.case 2 ")
 
@@ -42,11 +48,14 @@ func Test_Zap_Factory_prop_presets_example(t *testing.T) {
 func Test_Zap_Factory_prop_presets_production(t *testing.T) {
 
 	var lfo = logzap.NewLoggerOption()
-	lfo.SetProperty(logzap.P_PRESETS, logzap.PRESETS_PROD)
+	lfo.SetProperty(logzap.PRESETS, logzap.PRESETS_PROD)
 
 	// use new or struct binding
 	// create instance from implement
-	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	if err != nil {
+		log.Println(err)
+	}
 
 	logger := logapi.GetLogger("test.case1")
 

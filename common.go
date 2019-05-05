@@ -10,7 +10,7 @@ import (
 const (
 
 	// --- key contant ---
-	P_PRESETS = "zap.presets"
+	PRESETS = "zap.presets"
 
 	// --- value constant ---
 	PRESETS_EXAMPLE = "example"
@@ -75,24 +75,14 @@ func levelEventFilter(runtimeLevel byte) zapcore.LevelEnabler {
 
 		// return define level
 		levelEnabler = zap.NewAtomicLevelAt(zap.DebugLevel).Level()
-		break
 	case loggercom.INFO:
 		levelEnabler = zap.NewAtomicLevelAt(zap.InfoLevel).Level()
-		break
-
 	case loggercom.WARN:
-
 		levelEnabler = zap.NewAtomicLevelAt(zap.WarnLevel).Level()
-		break
 	case loggercom.FATAL:
-
 		levelEnabler = zap.NewAtomicLevelAt(zap.FatalLevel).Level()
-		break
-
 	case loggercom.ERROR:
-
 		levelEnabler = zap.NewAtomicLevelAt(zap.ErrorLevel).Level()
-		break
 	}
 
 	if levelEnabler == nil {

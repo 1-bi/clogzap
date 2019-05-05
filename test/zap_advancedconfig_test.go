@@ -7,6 +7,7 @@ import (
 	zaplayout "github.com/1-bi/log-zap/layout"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"log"
 	"os"
 	"testing"
 )
@@ -19,15 +20,17 @@ func Test_Zap_Factory_case1_advanced(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	if err != nil {
+		log.Println(err)
+	}
 
 }
 
 //  Test_BasicCase1_Debug define bug info
 func Test_Zap_Factory_case1_advanced_example(t *testing.T) {
 
-	var multiOpts []logapi.Option
-	multiOpts = make([]logapi.Option, 0)
+	var multiOpts = make([]logapi.Option, 0)
 
 	// --- construct layout ---
 	var jsonLayout = zaplayout.NewJsonLayout()
@@ -54,8 +57,10 @@ func Test_Zap_Factory_case1_advanced_example(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
-
+	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
+	if err != nil {
+		log.Println(err)
+	}
 	//logger := lfm.GetLogger()
 	logger := logapi.GetLogger("module")
 

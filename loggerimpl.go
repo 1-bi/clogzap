@@ -14,10 +14,6 @@ type logger struct {
 	runtimeLevel byte
 }
 
-func (log *logger) setRuntimeLevel(runtimeLevel byte) {
-	log.runtimeLevel = runtimeLevel
-}
-
 func (log *logger) setZaplogger(logInst *zap.Logger) {
 	log.zaplogger = logInst
 }

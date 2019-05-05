@@ -5,6 +5,7 @@ import (
 	loggercom "github.com/1-bi/log-api"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"log"
 	"strings"
 )
 
@@ -14,7 +15,7 @@ type ZapFactoryRegister struct {
 
 func (myself *ZapFactoryRegister) CreateStructBean() loggercom.StructBean {
 	var zapLb = new(zapLoggerBean)
-	zapLb.fieldProps = make(map[string]zap.Field, 0)
+	zapLb.fieldProps = make(map[string]zap.Field)
 	return zapLb
 }
 
@@ -36,10 +37,12 @@ func (myself *ZapFactoryRegister) CreateLogger(loggerName string, multiopts ...l
 	return nil, nil
 }
 
+/*
+
 func (myself *ZapFactoryRegister) createZapLogger(opts loggercom.Option) (*zap.Logger, error) {
 
 	// --- check preset key ---
-	var customPresets = opts.GetProperties()[P_PRESETS]
+	var customPresets = opts.GetProperties()[PRESETS]
 	if customPresets == "" {
 		// use default ==
 		customPresets = PRESETS_DEV
@@ -51,16 +54,12 @@ func (myself *ZapFactoryRegister) createZapLogger(opts loggercom.Option) (*zap.L
 	switch customPresets {
 	case PRESETS_EXAMPLE:
 		logInst = zap.NewExample()
-		break
 	case PRESETS_DEV:
 		logInst, err = zap.NewDevelopment()
-		break
 	case PRESETS_PROD:
 		logInst, err = zap.NewProduction()
-		break
 	case PRESETS_NOP:
 		logInst = zap.NewNop()
-		break
 	}
 
 	if logInst != nil {
@@ -70,6 +69,7 @@ func (myself *ZapFactoryRegister) createZapLogger(opts loggercom.Option) (*zap.L
 	return nil, err
 
 }
+*/
 
 // useMultiLoggerOption construct method
 func (myself *ZapFactoryRegister) useMultiLoggerOption(multiopts []loggercom.Option) (loggercom.Logger, error) {
@@ -109,19 +109,14 @@ func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) 
 		switch strings.ToUpper(opt.GetLevel()) {
 		case "DEBUG":
 			runtimeLevel = loggercom.DEBUG
-			break
 		case "INFO":
 			runtimeLevel = loggercom.INFO
-			break
 		case "WARN":
 			runtimeLevel = loggercom.WARN
-			break
 		case "FATAL":
 			runtimeLevel = loggercom.FATAL
-			break
 		case "ERROR":
 			runtimeLevel = loggercom.ERROR
-			break
 		}
 	}
 
@@ -157,10 +152,14 @@ func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) 
 
 	core := zapcore.NewTee(multiCores...)
 
-	var zaplog *zap.Logger
+	var zaplog = zap.New(core)
 
-	zaplog = zap.New(core)
-	defer zaplog.Sync()
+	defer func() {
+		err := zaplog.Sync()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	loginst := new(logger)
 	loginst.setZaplogger(zaplog)

@@ -3,6 +3,7 @@ package test
 import (
 	"github.com/1-bi/log-api"
 	logzap "github.com/1-bi/log-zap"
+	"log"
 	"testing"
 )
 
@@ -10,11 +11,14 @@ import (
 func Test_LoggerBean_Debug(t *testing.T) {
 
 	var lfo = logzap.NewLoggerOption()
-	lfo.SetProperty(logzap.P_PRESETS, logzap.PRESETS_DEV)
+	lfo.SetProperty(logzap.PRESETS, logzap.PRESETS_DEV)
 
 	// use new or struct binding
 	// create instance from implement
-	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	if err != nil {
+		log.Println(err)
+	}
 
 	var loggerBean = logapi.NewStructBean()
 	var logger = logapi.GetLogger("loggerbean.test")
@@ -29,11 +33,14 @@ func Test_LoggerBean_Debug(t *testing.T) {
 func Test_BasicCase1_Info(t *testing.T) {
 
 	var lfo = logzap.NewLoggerOption()
-	lfo.SetProperty(logzap.P_PRESETS, logzap.PRESETS_DEV)
+	lfo.SetProperty(logzap.PRESETS, logzap.PRESETS_DEV)
 
 	// use new or struct binding
 	// create instance from implement
-	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	if err != nil {
+		log.Println(err)
+	}
 
 	var loggerBean = logapi.NewStructBean()
 

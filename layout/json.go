@@ -9,7 +9,7 @@ import (
 type jsonLayout struct {
 
 	// charset  default use utf-8
-	charset string "utf-8"
+	charset string
 	lyProps map[string]string
 	pattern []byte
 

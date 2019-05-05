@@ -5,14 +5,14 @@ import (
 	loggerzap "github.com/1-bi/log-zap"
 	appender "github.com/1-bi/log-zap/appender"
 	zaplayout "github.com/1-bi/log-zap/layout"
+	"log"
 	"testing"
 )
 
 //  Test_BasicCase1_Debug define bug info
 func Benchmark_Zap_Factory_case1_advanced_example(b *testing.B) {
 	//b.StopTimer()
-	var multiOpts []loggercom.Option
-	multiOpts = make([]loggercom.Option, 0)
+	var multiOpts = make([]loggercom.Option, 0)
 	// --- construct layout ---
 	var jsonLayout = zaplayout.NewJsonLayout()
 	// --- set appender
@@ -25,7 +25,12 @@ func Benchmark_Zap_Factory_case1_advanced_example(b *testing.B) {
 
 	// use new or struct binding
 	// create instance from implement
-	loggercom.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
+	err := loggercom.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	// --- create logger factory manager
 

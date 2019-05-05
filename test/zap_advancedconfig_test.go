@@ -71,6 +71,56 @@ func Test_Zap_Factory_case1_advanced_example(t *testing.T) {
 
 }
 
+//  Test_BasicCase1_Debug define bug info
+func Test_Zap_Factory_case1_structbean_example(t *testing.T) {
+
+	var multiOpts = make([]logapi.Option, 0)
+
+	// --- construct layout ---
+	var jsonLayout = zaplayout.NewJsonLayout()
+	//jsonLayout.SetTimeFormat("2006-01-02 15:04:05")
+	jsonLayout.SetTimeFormat("2006-01-02 15:04:05 +0800 CST")
+	//fmt.Println( time.Now().Location() )
+
+	// --- set appender
+	var consoleAppender = appender.NewConsoleAppender(jsonLayout)
+
+	var loggerOpt1 = logzap.NewLoggerOption()
+	loggerOpt1.SetLevel("debug")
+	loggerOpt1.AddAppender(consoleAppender)
+
+	multiOpts = append(multiOpts, loggerOpt1)
+
+	var fileAppender = appender.NewFileAppender(jsonLayout)
+
+	var loggerOpt2 = logzap.NewLoggerOption()
+	loggerOpt2.SetLevel("warn")
+	loggerOpt2.AddAppender(fileAppender)
+
+	//multiOpts = append(multiOpts, loggerOpt2)
+
+	// use new or struct binding
+	// create instance from implement
+	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
+	if err != nil {
+		log.Println(err)
+	}
+	//logger := lfm.GetLogger()
+	logger := logapi.GetLogger("module")
+
+	var loggerBean = logapi.NewStructBean()
+
+	loggerBean.LogString("testStringfield2", "logstring filed")
+	loggerBean.LogBool("testBoolField2", false)
+	loggerBean.LogFloat32("testfloat32Field2", 32.32)
+
+	logger.Debug("debug message for  example", loggerBean)
+	logger.Info("info message for  example", loggerBean)
+	logger.Warn("warn message for  example", loggerBean)
+	logger.Error("error  message for  example", loggerBean)
+
+}
+
 func Test_Zap_Factory_anothe(t *testing.T) {
 
 	// First, define our level-handling logic.

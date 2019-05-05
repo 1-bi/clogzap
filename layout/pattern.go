@@ -1,7 +1,7 @@
 package layout
 
 import (
-	"github.com/1-bi/clog/loggerzap"
+	loggerzap "github.com/1-bi/log-zap"
 	"go.uber.org/zap/zapcore"
 )
 

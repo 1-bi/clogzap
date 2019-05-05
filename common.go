@@ -1,4 +1,4 @@
-package log_zap
+package logzap
 
 import (
 	loggercom "github.com/1-bi/log-api"
@@ -71,25 +71,25 @@ func levelEventFilter(runtimeLevel byte) zapcore.LevelEnabler {
 	*/
 
 	switch runtimeLevel {
-	case loggercom.DEVEL_DEBUG:
+	case loggercom.DEBUG:
 
 		// return define level
 		levelEnabler = zap.NewAtomicLevelAt(zap.DebugLevel).Level()
 		break
-	case loggercom.DEVEL_INFO:
+	case loggercom.INFO:
 		levelEnabler = zap.NewAtomicLevelAt(zap.InfoLevel).Level()
 		break
 
-	case loggercom.DEVEL_WARN:
+	case loggercom.WARN:
 
 		levelEnabler = zap.NewAtomicLevelAt(zap.WarnLevel).Level()
 		break
-	case loggercom.DEVEL_FATAL:
+	case loggercom.FATAL:
 
 		levelEnabler = zap.NewAtomicLevelAt(zap.FatalLevel).Level()
 		break
 
-	case loggercom.DEVEL_ERROR:
+	case loggercom.ERROR:
 
 		levelEnabler = zap.NewAtomicLevelAt(zap.ErrorLevel).Level()
 		break

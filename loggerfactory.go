@@ -1,1 +1,1 @@
-package log_zap
+package logzap

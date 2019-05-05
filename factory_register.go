@@ -1,4 +1,4 @@
-package log_zap
+package logzap
 
 import (
 	"errors"
@@ -12,13 +12,14 @@ import (
 type ZapFactoryRegister struct {
 }
 
-func (myself *ZapFactoryRegister) CreateLoggerBean() loggercom.LoggerBean {
+func (myself *ZapFactoryRegister) CreateStructBean() loggercom.StructBean {
 	var zapLb = new(zapLoggerBean)
 	zapLb.fieldProps = make(map[string]zap.Field, 0)
 	return zapLb
 }
 
-func (myself *ZapFactoryRegister) CreateLogger(multiopts ...loggercom.Option) (loggercom.Logger, error) {
+// CreateLogger add logger name string
+func (myself *ZapFactoryRegister) CreateLogger(loggerName string, multiopts ...loggercom.Option) (loggercom.Logger, error) {
 	// --- check the current register implement is supported multi options or not.
 
 	// --- check the multiops ---
@@ -33,54 +34,6 @@ func (myself *ZapFactoryRegister) CreateLogger(multiopts ...loggercom.Option) (l
 
 	// --- bindiing logger intance ----
 	return nil, nil
-}
-
-func (myself *ZapFactoryRegister) useOneOption(opts loggercom.Option) (loggercom.Logger, error) {
-
-	var runtimeLevel byte
-	if opts.GetLevel() == "" {
-		// --- set the default level ---
-		runtimeLevel = loggercom.DEVEL_INFO
-	} else {
-
-		// set the runtime level
-		switch strings.ToUpper(opts.GetLevel()) {
-		case "DEBUG":
-			runtimeLevel = loggercom.DEVEL_DEBUG
-			break
-		case "INFO":
-			runtimeLevel = loggercom.DEVEL_INFO
-			break
-		case "WARN":
-			runtimeLevel = loggercom.DEVEL_WARN
-			break
-		case "FATAL":
-			runtimeLevel = loggercom.DEVEL_FATAL
-			break
-		case "ERROR":
-			runtimeLevel = loggercom.DEVEL_ERROR
-			break
-		default:
-			return nil, errors.New("Custom Log Level is not predefined from input \"" + opts.GetLevel() + "\". Please choose one from 'debug' , 'info' , 'warn', 'fatal', 'error' .")
-		}
-
-	}
-
-	loginst := new(logger)
-	loginst.setRuntimeLevel(runtimeLevel)
-
-	var zaplog *zap.Logger
-	var err error
-
-	zaplog, err = myself.createZapLogger(opts)
-	// --- build new error
-	if err != nil {
-		return nil, err
-	}
-
-	loginst.setZaplogger(zaplog)
-
-	return loginst, err
 }
 
 func (myself *ZapFactoryRegister) createZapLogger(opts loggercom.Option) (*zap.Logger, error) {
@@ -149,25 +102,25 @@ func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) 
 	var runtimeLevel byte
 	if opt.GetLevel() == "" {
 		// --- set the default level ---
-		runtimeLevel = loggercom.DEVEL_INFO
+		runtimeLevel = loggercom.INFO
 	} else {
 
 		// set the runtime level
 		switch strings.ToUpper(opt.GetLevel()) {
 		case "DEBUG":
-			runtimeLevel = loggercom.DEVEL_DEBUG
+			runtimeLevel = loggercom.DEBUG
 			break
 		case "INFO":
-			runtimeLevel = loggercom.DEVEL_INFO
+			runtimeLevel = loggercom.INFO
 			break
 		case "WARN":
-			runtimeLevel = loggercom.DEVEL_WARN
+			runtimeLevel = loggercom.WARN
 			break
 		case "FATAL":
-			runtimeLevel = loggercom.DEVEL_FATAL
+			runtimeLevel = loggercom.FATAL
 			break
 		case "ERROR":
-			runtimeLevel = loggercom.DEVEL_ERROR
+			runtimeLevel = loggercom.ERROR
 			break
 		}
 	}

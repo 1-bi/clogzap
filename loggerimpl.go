@@ -1,7 +1,7 @@
-package log_zap
+package logzap
 
 import (
-	loggercom "github.com/1-bi/log-api"
+	logapi "github.com/1-bi/log-api"
 	"go.uber.org/zap"
 )
 
@@ -23,23 +23,23 @@ func (log *logger) setZaplogger(logInst *zap.Logger) {
 }
 
 func (log *logger) IsDebugEnabled() bool {
-	return log.runtimeLevel == loggercom.DEVEL_DEBUG
+	return log.runtimeLevel == logapi.DEBUG
 }
 
 func (log *logger) IsInfoEnabled() bool {
-	return log.runtimeLevel == loggercom.DEVEL_INFO
+	return log.runtimeLevel == logapi.INFO
 }
 
 func (log *logger) IsWarnEnabled() bool {
-	return log.runtimeLevel == loggercom.DEVEL_WARN
+	return log.runtimeLevel == logapi.WARN
 }
 
 func (log *logger) IsErrorEnabled() bool {
-	return log.runtimeLevel == loggercom.DEVEL_ERROR
+	return log.runtimeLevel == logapi.ERROR
 }
 
 // Debug debug logger message object
-func (log *logger) Debug(msg string, msgObj loggercom.LoggerBean) {
+func (log *logger) Debug(msg string, msgObj logapi.StructBean) {
 
 	// --- convert zap field ----
 	if msgObj != nil {
@@ -52,7 +52,7 @@ func (log *logger) Debug(msg string, msgObj loggercom.LoggerBean) {
 	}
 }
 
-func (log *logger) Info(msg string, msgObj loggercom.LoggerBean) {
+func (log *logger) Info(msg string, msgObj logapi.StructBean) {
 
 	// --- convert zap field ----
 	if msgObj != nil {
@@ -63,7 +63,7 @@ func (log *logger) Info(msg string, msgObj loggercom.LoggerBean) {
 	}
 }
 
-func (log *logger) Warn(msg string, msgObj loggercom.LoggerBean) {
+func (log *logger) Warn(msg string, msgObj logapi.StructBean) {
 
 	// --- convert zap field ----
 	if msgObj != nil {
@@ -75,7 +75,7 @@ func (log *logger) Warn(msg string, msgObj loggercom.LoggerBean) {
 
 }
 
-func (log *logger) Error(msg string, msgObj loggercom.LoggerBean) {
+func (log *logger) Error(msg string, msgObj logapi.StructBean) {
 	// --- convert zap field ----
 	if msgObj != nil {
 		zab := msgObj.(*zapLoggerBean)

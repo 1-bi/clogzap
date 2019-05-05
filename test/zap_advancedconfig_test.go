@@ -1,10 +1,10 @@
 package test
 
 import (
-	"github.com/1-bi/clog/loggercom"
-	"github.com/1-bi/clog/loggerzap"
-	"github.com/1-bi/clog/loggerzap/appender"
-	zaplayout "github.com/1-bi/clog/loggerzap/layout"
+	"github.com/1-bi/log-api"
+	logzap "github.com/1-bi/log-zap"
+	"github.com/1-bi/log-zap/appender"
+	zaplayout "github.com/1-bi/log-zap/layout"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"os"
@@ -14,28 +14,20 @@ import (
 //  Test_BasicCase1_Debug define bug info
 func Test_Zap_Factory_case1_advanced(t *testing.T) {
 
-	var lfm loggercom.LoggerFactory
-	var lfo = loggerzap.NewLoggerOption()
+	var lfo = logzap.NewLoggerOption()
 	lfo.SetLevel("warn")
 
 	// use new or struct binding
 	// create instance from implement
-	lfm = loggercom.NewLoggerFactory(new(loggerzap.ZapFactoryRegister), lfo)
-
-	// --- create logger factory manager
-	if lfm == nil {
-		t.Errorf(": logger factory  expected,[%v], actually: [%v]", " object ", " is null ")
-	}
+	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 
 }
 
 //  Test_BasicCase1_Debug define bug info
 func Test_Zap_Factory_case1_advanced_example(t *testing.T) {
 
-	var lfm loggercom.LoggerFactory
-
-	var multiOpts []loggercom.Option
-	multiOpts = make([]loggercom.Option, 0)
+	var multiOpts []logapi.Option
+	multiOpts = make([]logapi.Option, 0)
 
 	// --- construct layout ---
 	var jsonLayout = zaplayout.NewJsonLayout()
@@ -46,7 +38,7 @@ func Test_Zap_Factory_case1_advanced_example(t *testing.T) {
 	// --- set appender
 	var consoleAppender = appender.NewConsoleAppender(jsonLayout)
 
-	var loggerOpt1 = loggerzap.NewLoggerOption()
+	var loggerOpt1 = logzap.NewLoggerOption()
 	loggerOpt1.SetLevel("debug")
 	loggerOpt1.AddAppender(consoleAppender)
 
@@ -54,7 +46,7 @@ func Test_Zap_Factory_case1_advanced_example(t *testing.T) {
 
 	var fileAppender = appender.NewFileAppender(jsonLayout)
 
-	var loggerOpt2 = loggerzap.NewLoggerOption()
+	var loggerOpt2 = logzap.NewLoggerOption()
 	loggerOpt2.SetLevel("warn")
 	loggerOpt2.AddAppender(fileAppender)
 
@@ -62,15 +54,10 @@ func Test_Zap_Factory_case1_advanced_example(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	lfm = loggercom.NewLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
-
-	// --- create logger factory manager
-	if lfm == nil {
-		t.Errorf(": logger factory  expected,[%v], actually: [%v]", " object ", " is null ")
-	}
+	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
 
 	//logger := lfm.GetLogger()
-	logger := loggercom.GetLogger("module")
+	logger := logapi.GetLogger("module")
 
 	logger.Debug("debug message for  example", nil)
 	logger.Info("info message for  example", nil)

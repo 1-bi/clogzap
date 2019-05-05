@@ -11,8 +11,6 @@ import (
 //  Test_BasicCase1_Debug define bug info
 func Benchmark_Zap_Factory_case1_advanced_example(b *testing.B) {
 	//b.StopTimer()
-	var lfm loggercom.LoggerFactory
-
 	var multiOpts []loggercom.Option
 	multiOpts = make([]loggercom.Option, 0)
 	// --- construct layout ---
@@ -27,11 +25,11 @@ func Benchmark_Zap_Factory_case1_advanced_example(b *testing.B) {
 
 	// use new or struct binding
 	// create instance from implement
-	lfm = loggercom.NewLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
+	loggercom.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
 
 	// --- create logger factory manager
 
-	logger := lfm.GetLogger()
+	logger := loggercom.GetLogger("benshmark.test")
 
 	//logger.Debug("debug message for  example", nil)
 	//b.StartTimer()

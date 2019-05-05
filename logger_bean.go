@@ -1,4 +1,4 @@
-package log_zap
+package logzap
 
 import (
 	"go.uber.org/zap"

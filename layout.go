@@ -1,4 +1,4 @@
-package log_zap
+package logzap
 
 import (
 	loggercom "github.com/1-bi/log-api"

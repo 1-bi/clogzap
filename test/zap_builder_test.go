@@ -1,47 +1,36 @@
 package test
 
 import (
-	"github.com/1-bi/clog/loggercom"
-	"github.com/1-bi/clog/loggerzap"
+	"github.com/1-bi/log-api"
+	logzap "github.com/1-bi/log-zap"
 	"testing"
 )
 
 //  Test_BasicCase1_Debug define bug info
 func Test_Zap_Factory_case1_base(t *testing.T) {
 
-	var lfm loggercom.LoggerFactory
-	var lfo = loggerzap.NewLoggerOption()
+	var lfo = logzap.NewLoggerOption()
 	lfo.SetLevel("warn")
 
 	// use new or struct binding
 	// create instance from implement
-	lfm = loggercom.NewLoggerFactory(new(loggerzap.ZapFactoryRegister), lfo)
+	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 
 	// --- create logger factory manager
-	if lfm == nil {
-		t.Errorf(": logger factory  expected,[%v], actually: [%v]", " object ", " is null ")
-	}
 
 }
 
 //  Test_BasicCase1_Debug define bug info
 func Test_Zap_Factory_prop_presets_example(t *testing.T) {
 
-	var lfm loggercom.LoggerFactory
-
-	var lfo = loggerzap.NewLoggerOption()
-	lfo.SetProperty(loggerzap.P_PRESETS, loggerzap.PRESETS_EXAMPLE)
+	var lfo = logzap.NewLoggerOption()
+	lfo.SetProperty(logzap.P_PRESETS, logzap.PRESETS_EXAMPLE)
 
 	// use new or struct binding
 	// create instance from implement
-	lfm = loggercom.NewLoggerFactory(new(loggerzap.ZapFactoryRegister), lfo)
+	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 
-	// --- create logger factory manager
-	if lfm == nil {
-		t.Errorf(": logger factory  expected,[%v], actually: [%v]", " object ", " is null ")
-	}
-
-	logger := lfm.GetLogger()
+	logger := logapi.GetLogger("test.case 2 ")
 
 	logger.Debug("debug message for  example", nil)
 	logger.Info("info message for  example", nil)
@@ -52,21 +41,14 @@ func Test_Zap_Factory_prop_presets_example(t *testing.T) {
 //  Test_BasicCase1_Debug define bug info
 func Test_Zap_Factory_prop_presets_production(t *testing.T) {
 
-	var lfm loggercom.LoggerFactory
-
-	var lfo = loggerzap.NewLoggerOption()
-	lfo.SetProperty(loggerzap.P_PRESETS, loggerzap.PRESETS_PROD)
+	var lfo = logzap.NewLoggerOption()
+	lfo.SetProperty(logzap.P_PRESETS, logzap.PRESETS_PROD)
 
 	// use new or struct binding
 	// create instance from implement
-	lfm = loggercom.NewLoggerFactory(new(loggerzap.ZapFactoryRegister), lfo)
+	logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 
-	// --- create logger factory manager
-	if lfm == nil {
-		t.Errorf(": logger factory  expected,[%v], actually: [%v]", " object ", " is null ")
-	}
-
-	logger := lfm.GetLogger()
+	logger := logapi.GetLogger("test.case1")
 
 	logger.Debug("debug message for  prod", nil)
 	logger.Info("info message for  prod", nil)

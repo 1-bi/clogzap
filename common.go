@@ -94,7 +94,8 @@ func levelEventFilter(runtimeLevel byte) zapcore.LevelEnabler {
 
 // timeformater define thime formater
 type TimeFormater struct {
-	pattern string
+	pattern    string
+	timezoneId string
 }
 
 func NewTimeFormater(pattern string) *TimeFormater {
@@ -107,14 +108,24 @@ func (myself *TimeFormater) SetPattern(newPattern string) {
 	myself.pattern = newPattern
 
 	// --- parse fpr itc
+}
 
+func (myself *TimeFormater) SetTimeZone(newTimezone string) {
+	myself.timezoneId = newTimezone
 }
 
 func (myself *TimeFormater) CustomTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+
+	var tmpTime time.Time
+	if myself.timezoneId == "" || myself.timezoneId == "UTC" {
+		tmpTime = t.UTC()
+	} else {
+		tmpTime = t
+	}
 
 	if myself.pattern == "" {
 		myself.pattern = "2006-01-02T15:04:05.000Z0700"
 	}
 
-	enc.AppendString(t.Format(myself.pattern))
+	enc.AppendString(tmpTime.Format(myself.pattern))
 }

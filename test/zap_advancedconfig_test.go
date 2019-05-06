@@ -79,7 +79,9 @@ func Test_Zap_Factory_case1_structbean_example(t *testing.T) {
 	// --- construct layout ---
 	var jsonLayout = zaplayout.NewJsonLayout()
 	//jsonLayout.SetTimeFormat("2006-01-02 15:04:05")
-	jsonLayout.SetTimeFormat("2006-01-02 15:04:05 +0800 CST")
+	jsonLayout.SetTimeFormat("2006-01-02 15:04:05 +0800 UTC")
+	jsonLayout.SetTimezoneId("UTC")
+
 	//fmt.Println( time.Now().Location() )
 
 	// --- set appender

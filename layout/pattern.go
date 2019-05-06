@@ -60,6 +60,10 @@ func (myself *patternLayout) SetTimeFormat(timePattern string) {
 	myself.encoderConf.EncodeTime = myself.timeFormater.CustomTimeEncoder
 }
 
+func (myself *patternLayout) SetTimezoneId(timezoneId string) {
+	myself.timeFormater.SetTimeZone(timezoneId)
+}
+
 func (myself *patternLayout) SetCharset(newCharset string) {
 	myself.charset = newCharset
 }

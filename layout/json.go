@@ -60,6 +60,10 @@ func (myself *jsonLayout) SetTimeFormat(timePattern string) {
 	myself.encoderConf.EncodeTime = myself.timeFormater.CustomTimeEncoder
 }
 
+func (myself *jsonLayout) SetTimezoneId(timezoneId string) {
+	myself.timeFormater.SetTimeZone(timezoneId)
+}
+
 func (myself *jsonLayout) SetCharset(newCharset string) {
 	myself.charset = newCharset
 }

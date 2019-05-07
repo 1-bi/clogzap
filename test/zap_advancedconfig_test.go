@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"github.com/1-bi/log-api"
 	logzap "github.com/1-bi/log-zap"
 	"github.com/1-bi/log-zap/appender"
@@ -20,7 +21,7 @@ func Test_Zap_Factory_case1_advanced(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 	if err != nil {
 		log.Println(err)
 	}
@@ -57,7 +58,7 @@ func Test_Zap_Factory_case1_advanced_example(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
+	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
 	if err != nil {
 		log.Println(err)
 	}
@@ -103,13 +104,14 @@ func Test_Zap_Factory_case1_structbean_example(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
+	mainLog, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
 	if err != nil {
 		log.Println(err)
 	}
 	//logger := lfm.GetLogger()
 	logger := logapi.GetLogger("module")
 
+	fmt.Println(mainLog)
 	var loggerBean = logapi.NewStructBean()
 
 	loggerBean.LogString("testStringfield2", "logstring filed")

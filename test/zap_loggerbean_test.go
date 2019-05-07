@@ -15,7 +15,7 @@ func Test_LoggerBean_Debug(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 	if err != nil {
 		log.Println(err)
 	}
@@ -37,7 +37,7 @@ func Test_BasicCase1_Info(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 	if err != nil {
 		log.Println(err)
 	}

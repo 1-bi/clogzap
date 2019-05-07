@@ -15,7 +15,7 @@ func Test_Zap_Factory_case1_base(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 	if err != nil {
 		log.Println(err)
 	}
@@ -31,7 +31,7 @@ func Test_Zap_Factory_prop_presets_example(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 	if err != nil {
 		log.Println(err)
 	}
@@ -52,7 +52,7 @@ func Test_Zap_Factory_prop_presets_production(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
+	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), lfo)
 	if err != nil {
 		log.Println(err)
 	}

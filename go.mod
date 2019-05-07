@@ -3,7 +3,8 @@ module github.com/1-bi/log-zap
 go 1.12
 
 require (
-	github.com/1-bi/log-api v0.0.2
+	github.com/1-bi/log-api v0.0.3
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/stretchr/testify v1.3.0 // indirect
 	go.uber.org/atomic v1.4.0 // indirect

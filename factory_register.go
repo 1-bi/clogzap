@@ -32,13 +32,14 @@ func (myself *ZapFactoryRegister) CreateLogger(loggerName string, multiopts ...l
 	// --- if not config , use embbed log ---
 	if len(multiopts) == 0 {
 		// use default logger for development
-		return myself.createEmbbedLogger()
+
+		return myself.createEmbbedLogger(loggerName)
 
 	}
 
 	for _, opt := range multiopts {
 
-		logInst, logInstErr = myself.createOneLoggerInstance(opt)
+		logInst, logInstErr = myself.createOneLoggerInstance(loggerName, opt)
 
 		if logInstErr != nil {
 			return nil, errors.New(logInstErr.Error())
@@ -51,7 +52,7 @@ func (myself *ZapFactoryRegister) CreateLogger(loggerName string, multiopts ...l
 	return multiLogs[0], nil
 }
 
-func (myself *ZapFactoryRegister) createEmbbedLogger() (loggercom.Logger, error) {
+func (myself *ZapFactoryRegister) createEmbbedLogger(loggerName string) (loggercom.Logger, error) {
 
 	var err error
 	var zaplog *zap.Logger
@@ -64,15 +65,14 @@ func (myself *ZapFactoryRegister) createEmbbedLogger() (loggercom.Logger, error)
 
 	loginst := new(logger)
 	loginst.setZaplogger(zaplog)
+	loginst.name = loggerName
 
 	return loginst, nil
-
-	return nil, err
 
 }
 
 // useMultiLoggerOption construct method
-func (myself *ZapFactoryRegister) useMultiLoggerOption(multiopts []loggercom.Option) (loggercom.Logger, error) {
+func (myself *ZapFactoryRegister) useMultiLoggerOption(loggerName string, multiopts []loggercom.Option) (loggercom.Logger, error) {
 
 	// --- generate multiple logger ---
 	var multiLogs = make([]loggercom.Logger, 0)
@@ -82,7 +82,7 @@ func (myself *ZapFactoryRegister) useMultiLoggerOption(multiopts []loggercom.Opt
 
 	for _, opt := range multiopts {
 
-		logInst, logInstErr = myself.createOneLoggerInstance(opt)
+		logInst, logInstErr = myself.createOneLoggerInstance(loggerName, opt)
 
 		if logInstErr != nil {
 			return nil, errors.New(logInstErr.Error())
@@ -95,7 +95,7 @@ func (myself *ZapFactoryRegister) useMultiLoggerOption(multiopts []loggercom.Opt
 	return multiLogs[0], nil
 }
 
-func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) (loggercom.Logger, error) {
+func (myself *ZapFactoryRegister) createOneLoggerInstance(loggerName string, opt loggercom.Option) (loggercom.Logger, error) {
 
 	// --- define the level  ---
 	// set the runtime level

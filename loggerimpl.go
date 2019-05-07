@@ -1,7 +1,7 @@
 package logzap
 
 import (
-	logapi "github.com/1-bi/log-api"
+	"github.com/1-bi/log-api"
 	"go.uber.org/zap"
 )
 
@@ -11,7 +11,12 @@ import (
 
 type logger struct {
 	zaplogger    *zap.Logger
+	name         string
 	runtimeLevel byte
+}
+
+func (log *logger) GetName() string {
+	return log.name
 }
 
 func (log *logger) setZaplogger(logInst *zap.Logger) {
@@ -32,6 +37,10 @@ func (log *logger) IsWarnEnabled() bool {
 
 func (log *logger) IsErrorEnabled() bool {
 	return log.runtimeLevel == logapi.ERROR
+}
+
+func (log *logger) IsFatalEnabled() bool {
+	return log.runtimeLevel == logapi.FATAL
 }
 
 // Debug debug logger message object
@@ -78,6 +87,17 @@ func (log *logger) Error(msg string, msgObj logapi.StructBean) {
 		log.zaplogger.Error(msg, zab.convertToFields()...)
 	} else {
 		log.zaplogger.Error(msg)
+	}
+
+}
+
+func (log *logger) Fatal(msg string, msgObj logapi.StructBean) {
+	// --- convert zap field ----
+	if msgObj != nil {
+		zab := msgObj.(*zapLoggerBean)
+		log.zaplogger.Fatal(msg, zab.convertToFields()...)
+	} else {
+		log.zaplogger.Fatal(msg)
 	}
 
 }

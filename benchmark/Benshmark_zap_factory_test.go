@@ -25,7 +25,7 @@ func Benchmark_Zap_Factory_case1_advanced_example(b *testing.B) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
+	_, err := logapi.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
 
 	if err != nil {
 		log.Println(err)
@@ -63,7 +63,7 @@ func Benchmark_Zap_Factory_case1_advanced_structbean_example(b *testing.B) {
 
 	// use new or struct binding
 	// create instance from implement
-	err := logapi.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
+	_, err := logapi.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
 
 	if err != nil {
 		log.Println(err)

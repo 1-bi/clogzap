@@ -23,53 +23,53 @@ func (myself *ZapFactoryRegister) CreateStructBean() loggercom.StructBean {
 func (myself *ZapFactoryRegister) CreateLogger(loggerName string, multiopts ...loggercom.Option) (loggercom.Logger, error) {
 	// --- check the current register implement is supported multi options or not.
 
-	// --- check the multiops ---
-	switch len(multiopts) {
-	case 0:
-		break
-		//	case 1:
-		//		return myself.useOneOption(multiopts[0])
-	default:
-		return myself.useMultiLoggerOption(multiopts)
+	// --- generate multiple logger ---
+	var multiLogs = make([]loggercom.Logger, 0)
+
+	var logInst loggercom.Logger
+	var logInstErr error
+
+	// --- if not config , use embbed log ---
+	if len(multiopts) == 0 {
+		// use default logger for development
+		return myself.createEmbbedLogger()
+
 	}
 
-	// --- bindiing logger intance ----
-	return nil, nil
+	for _, opt := range multiopts {
+
+		logInst, logInstErr = myself.createOneLoggerInstance(opt)
+
+		if logInstErr != nil {
+			return nil, errors.New(logInstErr.Error())
+		}
+
+		multiLogs = append(multiLogs, logInst)
+
+	}
+
+	return multiLogs[0], nil
 }
 
-/*
-
-func (myself *ZapFactoryRegister) createZapLogger(opts loggercom.Option) (*zap.Logger, error) {
-
-	// --- check preset key ---
-	var customPresets = opts.GetProperties()[PRESETS]
-	if customPresets == "" {
-		// use default ==
-		customPresets = PRESETS_DEV
-	}
+func (myself *ZapFactoryRegister) createEmbbedLogger() (loggercom.Logger, error) {
 
 	var err error
-	var logInst *zap.Logger
+	var zaplog *zap.Logger
 
-	switch customPresets {
-	case PRESETS_EXAMPLE:
-		logInst = zap.NewExample()
-	case PRESETS_DEV:
-		logInst, err = zap.NewDevelopment()
-	case PRESETS_PROD:
-		logInst, err = zap.NewProduction()
-	case PRESETS_NOP:
-		logInst = zap.NewNop()
+	zaplog, err = zap.NewDevelopment()
+
+	if err != nil {
+		return nil, err
 	}
 
-	if logInst != nil {
-		return logInst, err
-	}
+	loginst := new(logger)
+	loginst.setZaplogger(zaplog)
+
+	return loginst, nil
 
 	return nil, err
 
 }
-*/
 
 // useMultiLoggerOption construct method
 func (myself *ZapFactoryRegister) useMultiLoggerOption(multiopts []loggercom.Option) (loggercom.Logger, error) {

@@ -1,49 +1,31 @@
 package test
 
 import (
-	"github.com/1-bi/log-api"
-	"github.com/1-bi/log-zap"
-	"github.com/1-bi/log-zap/appender"
-	zaplayout "github.com/1-bi/log-zap/layout"
-	"log"
+	"go.uber.org/zap"
 	"testing"
+	"time"
 )
 
 //  Test_BasicCase1_Debug define bug info
-func Test_LoggberPattern(t *testing.T) {
-	var multiOpts = make([]logapi.Option, 0)
+func Test_Zap_Dev(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+	var url = "http://www.moco.com"
 
-	// --- construct layout ---
-	var jsonLayout = zaplayout.NewJsonLayout()
-	//jsonLayout.SetTimeFormat("2006-01-02 15:04:05")
-	jsonLayout.SetTimeFormat("2006-01-02 15:04:05 +0800 UTC")
-	jsonLayout.SetTimezoneId("UTC")
+	logger.Info("failed to fetch URL",
+		// Structured context as strongly typed Field values.
+		zap.String("url", url),
+		zap.Int("attempt", 3),
+		zap.Duration("backoff", time.Second),
+	)
 
-	//fmt.Println( time.Now().Location() )
+	logger = zap.NewExample()
+	defer logger.Sync()
 
-	// --- set appender
-	var consoleAppender = appender.NewConsoleAppender(jsonLayout)
-
-	var loggerOpt1 = logzap.NewLoggerOption()
-	loggerOpt1.SetLevel("debug")
-	loggerOpt1.AddAppender(consoleAppender)
-
-	multiOpts = append(multiOpts, loggerOpt1)
-
-	//multiOpts = append(multiOpts, loggerOpt2)
-
-	// use new or struct binding
-	// create instance from implement
-	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
-	if err != nil {
-		log.Println(err)
-	}
-
-	//logger := lfm.GetLogger()
-	logger := logapi.GetLogger("testapp.testmodule.fun1")
-
-	var loggerBean = logapi.NewStructBean()
-
-	logger.Debug("logger bean test case:", loggerBean)
+	logger.With(
+		zap.String("loggerName", "test"),
+		zap.Namespace("metrics"),
+		zap.Int("counter", 1),
+	).Info("tracked some metrics")
 
 }

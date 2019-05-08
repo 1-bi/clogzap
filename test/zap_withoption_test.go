@@ -16,7 +16,7 @@ func Test_Option_singleOption1(t *testing.T) {
 	// --- construct layout ---
 	var jsonLayout = zaplayout.NewJsonLayout()
 	//jsonLayout.SetTimeFormat("2006-01-02 15:04:05")
-	jsonLayout.SetTimeFormat("2006-01-02T15:04:05.000Z UTC")
+	jsonLayout.SetTimeFormat("2006-01-02T15:04:05.0700Z UTC")
 	jsonLayout.SetTimezoneId("UTC")
 
 	//fmt.Println( time.Now().Location() )
@@ -50,7 +50,7 @@ func Test_Option_multiOptions(t *testing.T) {
 	// --- construct layout ---
 	var jsonLayout = zaplayout.NewJsonLayout()
 	//jsonLayout.SetTimeFormat("2006-01-02 15:04:05")
-	jsonLayout.SetTimeFormat("2006-01-02T15:04:05.000Z UTC")
+	jsonLayout.SetTimeFormat("2006-01-02T15:04:05.0700Z UTC")
 	jsonLayout.SetTimezoneId("UTC")
 
 	//fmt.Println( time.Now().Location() )
@@ -64,7 +64,7 @@ func Test_Option_multiOptions(t *testing.T) {
 
 	jsonLayout = zaplayout.NewJsonLayout()
 	//jsonLayout.SetTimeFormat("2006-01-02 15:04:05")
-	jsonLayout.SetTimeFormat("2006-01-02T15:04:05.000Z")
+	jsonLayout.SetTimeFormat("2006-01-02T15:04:05.0700Z ")
 	//jsonLayout.SetTimezoneId("UTC")
 
 	var specOpt1 = logzap.NewLoggerOption()

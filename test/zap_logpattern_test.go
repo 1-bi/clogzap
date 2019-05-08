@@ -34,13 +34,10 @@ func Test_LoggberPattern(t *testing.T) {
 
 	// use new or struct binding
 	// create instance from implement
-	mainLog, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
+	_, err := logapi.RegisterLoggerFactory(new(logzap.ZapFactoryRegister), multiOpts...)
 	if err != nil {
 		log.Println(err)
 	}
-
-	logapi.InitLoggerPattern([]string{
-		"testapp.testmodule.fun1"}, mainLog)
 
 	//logger := lfm.GetLogger()
 	logger := logapi.GetLogger("testapp.testmodule.fun1")

@@ -13,10 +13,20 @@ type logger struct {
 	zaplogger    *zap.Logger
 	name         string
 	runtimeLevel byte
+	parentLogger logapi.Logger
+	additivity   bool
 }
 
 func (log *logger) GetName() string {
 	return log.name
+}
+
+func (log *logger) SetParentLogger(parentLogger logapi.Logger) {
+	log.parentLogger = parentLogger
+}
+
+func (log *logger) GetParentLogger() logapi.Logger {
+	return log.parentLogger
 }
 
 func (log *logger) setZaplogger(logInst *zap.Logger) {
@@ -48,13 +58,18 @@ func (log *logger) Debug(msg string, msgObj logapi.StructBean) {
 
 	// --- convert zap field ----
 	if msgObj != nil {
-
 		zab := msgObj.(*zapLoggerBean)
 		log.zaplogger.Debug(msg, zab.convertToFields()...)
 
 	} else {
 		log.zaplogger.Debug(msg)
 	}
+
+	if log.additivity && log.parentLogger != nil {
+
+		log.parentLogger.Debug(msg, msgObj)
+	}
+
 }
 
 func (log *logger) Info(msg string, msgObj logapi.StructBean) {
@@ -66,6 +81,11 @@ func (log *logger) Info(msg string, msgObj logapi.StructBean) {
 	} else {
 		log.zaplogger.Info(msg)
 	}
+
+	if log.additivity && log.parentLogger != nil {
+		log.parentLogger.Info(msg, msgObj)
+	}
+
 }
 
 func (log *logger) Warn(msg string, msgObj logapi.StructBean) {
@@ -76,6 +96,10 @@ func (log *logger) Warn(msg string, msgObj logapi.StructBean) {
 		log.zaplogger.Warn(msg, zab.convertToFields()...)
 	} else {
 		log.zaplogger.Warn(msg)
+	}
+
+	if log.additivity && log.parentLogger != nil {
+		log.parentLogger.Warn(msg, msgObj)
 	}
 
 }
@@ -89,6 +113,10 @@ func (log *logger) Error(msg string, msgObj logapi.StructBean) {
 		log.zaplogger.Error(msg)
 	}
 
+	if log.additivity && log.parentLogger != nil {
+		log.parentLogger.Error(msg, msgObj)
+	}
+
 }
 
 func (log *logger) Fatal(msg string, msgObj logapi.StructBean) {
@@ -98,6 +126,10 @@ func (log *logger) Fatal(msg string, msgObj logapi.StructBean) {
 		log.zaplogger.Fatal(msg, zab.convertToFields()...)
 	} else {
 		log.zaplogger.Fatal(msg)
+	}
+
+	if log.additivity && log.parentLogger != nil {
+		log.parentLogger.Fatal(msg, msgObj)
 	}
 
 }

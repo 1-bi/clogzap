@@ -1,66 +1,56 @@
 package benchmark
 
 import (
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
-	"os"
+	logapi "github.com/1-bi/log-api"
+	loggerzap "github.com/1-bi/log-zap"
+	appender "github.com/1-bi/log-zap/appender"
+	zaplayout "github.com/1-bi/log-zap/layout"
+	"log"
 	"testing"
 )
 
 //  Test_BasicCase1_Debug define bug info
-func Benchmark_Zap_orginal(b *testing.B) {
+func Benchmark_example_case21(b *testing.B) {
 	//b.StopTimer()
+	var multiOpts = make([]logapi.Option, 0)
+	// --- construct layout ---
+	var jsonLayout = zaplayout.NewJsonLayout()
+	// --- set appender
+	var consoleAppender = appender.NewConsoleAppender(jsonLayout)
 
-	// First, define our level-handling logic.
-	/*
-		highPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-			return lvl >= zapcore.InfoLevel
-		})
-	*/
-	lowPriority := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl < zapcore.ErrorLevel
-	})
+	var loggerOpt1 = loggerzap.NewLoggerOption()
+	loggerOpt1.SetLevel("info")
+	loggerOpt1.AddAppender(consoleAppender)
+	multiOpts = append(multiOpts, loggerOpt1)
 
-	// Assume that we have clients for two Kafka topics. The clients implement
-	// zapcore.WriteSyncer and are safe for concurrent use. (If they only
-	// implement io.Writer, we can use zapcore.AddSync to add a no-op Sync
-	// method. If they're not safe for concurrent use, we can add a protecting
-	// mutex with zapcore.Lock.)
-	//topicDebugging := zapcore.AddSync(ioutil.Discard)
-	//topicErrors := zapcore.AddSync(ioutil.Discard)
+	jsonLayout = zaplayout.NewJsonLayout()
+	//jsonLayout.SetTimeFormat("2006-01-02 15:04:05")
+	jsonLayout.SetTimeFormat("2006-01-02T15:04:05.0700Z ")
+	//jsonLayout.SetTimezoneId("UTC")
 
-	// High-priority output should also go to standard error, and low-priority
-	// output should also go to standard out.
-	consoleDebugging := zapcore.Lock(os.Stdout)
-	//consoleErrors := zapcore.Lock(os.Stderr)
+	var specOpt1 = loggerzap.NewLoggerOption()
+	specOpt1.SetLoggerPattern("benshmark")
+	specOpt1.SetLevel("warn")
+	specOpt1.AddAppender(appender.NewConsoleAppender(jsonLayout))
 
-	// Optimize the Kafka output for machine consumption and the console output
-	// for human operators.
-	//kafkaEncoder := zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
-	consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+	// use new or struct binding
+	// create instance from implement
+	_, err := logapi.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)
 
-	// Join the outputs, encoders, and level-handling functions into
-	// zapcore.Cores, then tee the four cores together.
-	core := zapcore.NewTee(
-		//zapcore.NewCore(kafkaEncoder, topicErrors, highPriority),
-		//zapcore.NewCore(consoleEncoder, consoleErrors, highPriority),
-		//zapcore.NewCore(kafkaEncoder, topicDebugging, lowPriority),
-		zapcore.NewCore(consoleEncoder, consoleDebugging, lowPriority),
-	)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-	// From a zapcore.Core, it's easy to construct a Logger.
-	logger := zap.New(core)
-	defer logger.Sync()
-	//logger.Info("constructed a logger")
-	//logger.Warn("constructed a logger waring ")
-	//logger.Error("constructed a logger error ")
+	// --- create logger factory manager
+
+	logger := logapi.GetLogger("benshmark.test")
 
 	//logger.Debug("debug message for  example", nil)
 	//b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		logger.Info("constructed a logger info ")
-		//logger.Warn("constructed a logger waring ")
-		//logger.Warn("constructed a logger error ")
+		logger.Info("info message for  example", nil)
+		//logger.Warn("warn message for  example", nil)
 	}
 	//logger.Warn("warn message for  example", nil)
 	//logger.Error("error  message for  example", nil)

@@ -66,7 +66,6 @@ func (log *logger) Debug(msg string, msgObj logapi.StructBean) {
 	}
 
 	if log.additivity && log.parentLogger != nil {
-
 		log.parentLogger.Debug(msg, msgObj)
 	}
 
@@ -85,7 +84,6 @@ func (log *logger) Info(msg string, msgObj logapi.StructBean) {
 	if log.additivity && log.parentLogger != nil {
 		log.parentLogger.Info(msg, msgObj)
 	}
-
 }
 
 func (log *logger) Warn(msg string, msgObj logapi.StructBean) {
@@ -97,11 +95,9 @@ func (log *logger) Warn(msg string, msgObj logapi.StructBean) {
 	} else {
 		log.zaplogger.Warn(msg)
 	}
-
 	if log.additivity && log.parentLogger != nil {
 		log.parentLogger.Warn(msg, msgObj)
 	}
-
 }
 
 func (log *logger) Error(msg string, msgObj logapi.StructBean) {
@@ -127,7 +123,6 @@ func (log *logger) Fatal(msg string, msgObj logapi.StructBean) {
 	} else {
 		log.zaplogger.Fatal(msg)
 	}
-
 	if log.additivity && log.parentLogger != nil {
 		log.parentLogger.Fatal(msg, msgObj)
 	}

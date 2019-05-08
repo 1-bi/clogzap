@@ -52,19 +52,15 @@ func (myself *ZapFactoryRegister) CreateLogger(multiopts ...loggercom.Option) ([
 			continue
 		}
 
+		logInst, logInstErr = myself.createOneLoggerInstance(opt)
+
 		if strings.ToLower(strings.TrimSpace(opt.GetLoggerPattern())) == "main" {
+			mainLogger = logInst
 			mainLoggerExisted = true
 		}
 
-		logInst, logInstErr = myself.createOneLoggerInstance(opt)
-
 		if logInstErr != nil {
 			return nil, errors.New(logInstErr.Error())
-		}
-
-		// get the main logger define
-		if mainLoggerExisted {
-			mainLogger = logInst
 		}
 
 		multiLogs = append(multiLogs, logInst)
@@ -88,6 +84,7 @@ func (myself *ZapFactoryRegister) CreateLogger(multiopts ...loggercom.Option) ([
 	}
 
 	// --- set the main logger handler ---
+
 	for _, log := range multiLogs {
 
 		if log.GetName() == "main" {

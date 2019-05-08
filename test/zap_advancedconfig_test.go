@@ -17,7 +17,7 @@ import (
 func Test_Zap_Factory_case1_advanced(t *testing.T) {
 
 	var lfo = logzap.NewLoggerOption()
-	lfo.SetLevel("warn")
+	lfo.SetLevel("debug")
 
 	// use new or struct binding
 	// create instance from implement

@@ -23,6 +23,17 @@ func Benchmark_Zap_Factory_case1_advanced_example(b *testing.B) {
 	loggerOpt1.AddAppender(consoleAppender)
 	multiOpts = append(multiOpts, loggerOpt1)
 
+	jsonLayout = zaplayout.NewJsonLayout()
+	//jsonLayout.SetTimeFormat("2006-01-02 15:04:05")
+	jsonLayout.SetTimeFormat("2006-01-02T15:04:05.0700Z ")
+	//jsonLayout.SetTimezoneId("UTC")
+
+	var specOpt1 = loggerzap.NewLoggerOption()
+	specOpt1.SetLoggerPattern("benshmark.test")
+	specOpt1.SetLevel("warn")
+	specOpt1.AddAppender(appender.NewConsoleAppender(jsonLayout))
+	multiOpts = append(multiOpts, loggerOpt1)
+
 	// use new or struct binding
 	// create instance from implement
 	_, err := logapi.RegisterLoggerFactory(new(loggerzap.ZapFactoryRegister), multiOpts...)

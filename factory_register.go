@@ -20,38 +20,84 @@ func (myself *ZapFactoryRegister) CreateStructBean() loggercom.StructBean {
 }
 
 // CreateLogger add logger name string
-func (myself *ZapFactoryRegister) CreateLogger(loggerName string, multiopts ...loggercom.Option) (loggercom.Logger, error) {
+func (myself *ZapFactoryRegister) CreateLogger(multiopts ...loggercom.Option) ([]loggercom.Logger, error) {
 	// --- check the current register implement is supported multi options or not.
 
 	// --- generate multiple logger ---
 	var multiLogs = make([]loggercom.Logger, 0)
 
-	var logInst loggercom.Logger
+	var logInst loggercom.CompositeLogger
 	var logInstErr error
 
 	// --- if not config , use embbed log ---
 	if len(multiopts) == 0 {
 		// use default logger for development
-		return myself.createEmbbedLogger()
+		logInst, logInstErr = myself.createEmbbedLogger("main")
 
+		if logInstErr != nil {
+			return nil, logInstErr
+		}
+
+		return multiLogs, nil
 	}
 
+	// check the main logger exist ---
+	var mainLogger loggercom.CompositeLogger
+
+	var mainLoggerExisted = false
+	// use multi opts
 	for _, opt := range multiopts {
 
+		if opt == nil {
+			continue
+		}
+
 		logInst, logInstErr = myself.createOneLoggerInstance(opt)
+
+		if strings.ToLower(strings.TrimSpace(opt.GetLoggerPattern())) == "main" {
+			mainLogger = logInst
+			mainLoggerExisted = true
+		}
 
 		if logInstErr != nil {
 			return nil, errors.New(logInstErr.Error())
 		}
 
 		multiLogs = append(multiLogs, logInst)
-
 	}
 
-	return multiLogs[0], nil
+	if len(multiLogs) == 0 {
+		log.Println("Use default logger settting without any option.")
+		logInst, logInstErr = myself.createEmbbedLogger("main")
+
+		if logInstErr != nil {
+			return nil, logInstErr
+		}
+
+		multiLogs = append(multiLogs, logInst)
+
+		return multiLogs, nil
+	}
+
+	if !mainLoggerExisted {
+		return nil, errors.New("Logger \"main\" must be defined. Please check the logger pattern value defined in Option.  ")
+	}
+
+	// --- set the main logger handler ---
+
+	for _, log := range multiLogs {
+
+		if log.GetName() == "main" {
+			continue
+		}
+
+		log.(loggercom.CompositeLogger).SetParentLogger(mainLogger)
+	}
+
+	return multiLogs, nil
 }
 
-func (myself *ZapFactoryRegister) createEmbbedLogger() (loggercom.Logger, error) {
+func (myself *ZapFactoryRegister) createEmbbedLogger(loggerName string) (loggercom.CompositeLogger, error) {
 
 	var err error
 	var zaplog *zap.Logger
@@ -64,38 +110,19 @@ func (myself *ZapFactoryRegister) createEmbbedLogger() (loggercom.Logger, error)
 
 	loginst := new(logger)
 	loginst.setZaplogger(zaplog)
+	loginst.name = loggerName
 
 	return loginst, nil
 
-	return nil, err
-
 }
 
-// useMultiLoggerOption construct method
-func (myself *ZapFactoryRegister) useMultiLoggerOption(multiopts []loggercom.Option) (loggercom.Logger, error) {
+func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) (loggercom.CompositeLogger, error) {
 
-	// --- generate multiple logger ---
-	var multiLogs = make([]loggercom.Logger, 0)
-
-	var logInst loggercom.Logger
-	var logInstErr error
-
-	for _, opt := range multiopts {
-
-		logInst, logInstErr = myself.createOneLoggerInstance(opt)
-
-		if logInstErr != nil {
-			return nil, errors.New(logInstErr.Error())
-		}
-
-		multiLogs = append(multiLogs, logInst)
-
+	// check option inputed
+	var zapOption = opt.(*runtimeOption)
+	if len(zapOption.appenders) == 0 {
+		return nil, errors.New("Set one appender for logger output at least.")
 	}
-
-	return multiLogs[0], nil
-}
-
-func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) (loggercom.Logger, error) {
 
 	// --- define the level  ---
 	// set the runtime level
@@ -162,6 +189,9 @@ func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) 
 	}()
 
 	loginst := new(logger)
+	loginst.name = opt.GetLoggerPattern()
+	loginst.additivity = opt.GetAdditivity()
+
 	loginst.setZaplogger(zaplog)
 
 	return loginst, nil

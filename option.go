@@ -7,6 +7,11 @@ import (
 // runtimeOption
 type runtimeOption struct {
 	level string
+
+	loggerPattern string
+
+	additivity bool
+
 	props map[string]string
 	//layout logapi.Layout
 
@@ -18,6 +23,8 @@ func NewLoggerOption() *runtimeOption {
 	var o = new(runtimeOption)
 	o.props = make(map[string]string)
 	o.appenders = make(map[string]zapAppender)
+	o.additivity = true
+	o.loggerPattern = "main"
 	return o
 }
 
@@ -54,8 +61,19 @@ func (myself *runtimeOption) AddAppender(appender zapAppender) {
 	myself.appenders[appender.GetAppenderName()] = appender
 }
 
-/*
-func (myself *runtimeOption) getAppenderMap() map[string]zapAppender {
-	return myself.appenders
+func (myself *runtimeOption) SetLoggerPattern(loggerPattern string) {
+	myself.loggerPattern = loggerPattern
 }
-*/
+
+func (myself *runtimeOption) GetLoggerPattern() string {
+	return myself.loggerPattern
+}
+
+func (myself *runtimeOption) SetAdditivity(newadditivity bool) {
+	myself.additivity = newadditivity
+}
+
+// GetAdditivity get the Additivity status
+func (myself *runtimeOption) GetAdditivity() bool {
+	return myself.additivity
+}

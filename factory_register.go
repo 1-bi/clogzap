@@ -52,6 +52,8 @@ func (myself *ZapFactoryRegister) CreateLogger(multiopts ...loggercom.Option) ([
 			continue
 		}
 
+		//fmt.Println( )
+
 		logInst, logInstErr = myself.createOneLoggerInstance(opt)
 
 		if strings.ToLower(strings.TrimSpace(opt.GetLoggerPattern())) == "main" {
@@ -156,6 +158,8 @@ func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) 
 	multiCores := make([]zapcore.Core, 0)
 
 	for _, a := range appenderMap {
+		// --- init appender ---
+		a.Initialize()
 
 		var cores, err = myself.createZapCores(level, a.(zapAppender))
 
@@ -176,7 +180,6 @@ func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) 
 
 	// Join the outputs, encoders, and level-handling functions into
 	// zapcore.Cores, then tee the four cores together.
-
 	core := zapcore.NewTee(multiCores...)
 
 	var zaplog = zap.New(core)
@@ -198,6 +201,7 @@ func (myself *ZapFactoryRegister) createOneLoggerInstance(opt loggercom.Option) 
 
 }
 
+// createZapCores create base logger handle
 func (myself *ZapFactoryRegister) createZapCores(level zapcore.LevelEnabler, appender zapAppender) ([]zapcore.Core, error) {
 
 	// --- check the layout --

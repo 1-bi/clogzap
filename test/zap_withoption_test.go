@@ -5,6 +5,9 @@ import (
 	"github.com/1-bi/log-zap"
 	"github.com/1-bi/log-zap/appender"
 	zaplayout "github.com/1-bi/log-zap/layout"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"log"
 	"testing"
 )
@@ -87,4 +90,26 @@ func Test_Option_multiOptions(t *testing.T) {
 	logger.Warn("Warn message singleOption1", nil)
 	logger.Error("Error message singleOption1", nil)
 
+}
+
+func TestLog(t *testing.T) {
+
+	hook := lumberjack.Logger{
+		Filename:   "/var/log/foo.log",
+		MaxSize:    500, // megabytes
+		MaxBackups: 3,
+		MaxAge:     28, //days
+	}
+	w := zapcore.AddSync(&hook)
+
+	encoderConfig := zap.NewProductionEncoderConfig()
+	encoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	core := zapcore.NewCore(
+		zapcore.NewConsoleEncoder(encoderConfig),
+		w,
+		zap.DebugLevel,
+	)
+
+	logger := zap.New(core)
+	logger.Info("DefaultLogger init success")
 }
